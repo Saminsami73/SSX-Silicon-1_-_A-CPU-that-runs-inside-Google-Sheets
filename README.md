@@ -4,7 +4,7 @@ A fully functional, verified 32-bit CPU running inside Google Sheets.
 
 Creator: Samin Sami (SS)  
 Architecture: SSX-32 (32-Bit RISC/CISC Hybrid)  
-Target: Google Sheets and Microsoft Excel  
+Target: Google Sheets  
 License: MIT  
 
 ---
