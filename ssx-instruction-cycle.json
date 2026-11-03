@@ -1,0 +1,48 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "SSX Silicon 1 - Instruction Execution Pipeline",
+    "subtitle": "5-stage cycle workflow in Google Sheets from clock pulse to register writeback",
+    "output": ".archify/workflow-ssx-instruction-cycle-20261103-124600/ssx-instruction-cycle.html",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "lane_ctrl", "label": "Clock & Branch Control" },
+    { "id": "lane_fetch", "label": "Fetch & Instruction Decode" },
+    { "id": "lane_exec", "label": "Arithmetic & Logic Execution" },
+    { "id": "lane_mem", "label": "Memory Access & Writeback" }
+  ],
+  "mainPath": ["clk_pulse", "fetch_word", "decode_inst", "alu_op", "mem_access", "writeback"],
+  "nodes": [
+    { "id": "clk_pulse", "lane": "lane_ctrl", "col": 0, "type": "frontend", "label": "Clock Edge", "sublabel": "B4 flip / macro step", "width": 136 },
+    { "id": "fetch_word", "lane": "lane_fetch", "col": 1, "type": "backend", "label": "Fetch Instruction", "sublabel": "ROM[PC] to IR latch", "width": 136 },
+    { "id": "decode_inst", "lane": "lane_fetch", "col": 2, "type": "backend", "label": "Decode Fields", "sublabel": "Opcode, Rd, Rs1, Rs2", "width": 136 },
+    { "id": "alu_op", "lane": "lane_exec", "col": 3, "type": "backend", "label": "ALU Compute", "sublabel": "32-bit math and flags", "width": 136 },
+    { "id": "branch_eval", "lane": "lane_ctrl", "col": 3, "type": "security", "label": "Branch Condition", "sublabel": "Check ZF, CF, SF, OF", "width": 136 },
+    { "id": "mem_access", "lane": "lane_mem", "col": 4, "type": "database", "label": "Memory Access", "sublabel": "RAM / VRAM read/write", "width": 136 },
+    { "id": "writeback", "lane": "lane_mem", "col": 5, "type": "database", "label": "Register Latch", "sublabel": "Write result to Rd", "width": 136 },
+    { "id": "pc_advance", "lane": "lane_ctrl", "col": 5, "type": "backend", "label": "Update PC", "sublabel": "PC target or PC+1/2", "width": 136 }
+  ],
+  "edges": [
+    { "id": "e-clk-fetch", "from": "clk_pulse", "to": "fetch_word", "label": "trigger", "variant": "emphasis" },
+    { "id": "e-fetch-dec", "from": "fetch_word", "to": "decode_inst", "label": "32b word", "variant": "emphasis" },
+    { "id": "e-dec-alu", "from": "decode_inst", "to": "alu_op", "label": "operands", "variant": "emphasis" },
+    { "id": "e-alu-branch", "from": "alu_op", "to": "branch_eval", "label": "flags", "variant": "security" },
+    { "id": "e-alu-mem", "from": "alu_op", "to": "mem_access", "label": "address", "variant": "default" },
+    { "id": "e-mem-wb", "from": "mem_access", "to": "writeback", "label": "load data", "variant": "emphasis" },
+    { "id": "e-branch-pc", "from": "branch_eval", "to": "pc_advance", "label": "target", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Pipeline Execution Model",
+      "items": [
+        "Single-cycle equivalent instruction cycle resolved through Google Sheets iterative calculation formula network",
+        "Deterministic condition code evaluation for all 32-bit signed and unsigned branch variants",
+        "Direct memory bus arbitration supporting simultaneous RAM data transfer and 32x32 VRAM frame buffer updates"
+      ]
+    }
+  ]
+}

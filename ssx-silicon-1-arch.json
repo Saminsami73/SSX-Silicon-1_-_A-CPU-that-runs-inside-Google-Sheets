@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SSX Silicon 1 - 32-Bit Microarchitecture",
+    "subtitle": "Complete 32-bit CPU implementation in Google Sheets with formula latches and Apps Script engine",
+    "output": ".archify/architecture-ssx-silicon-1-arch-20261103-124600/ssx-silicon-1-arch.html",
+    "quality_profile": "showcase",
+    "visual_preset": "signal-flow"
+  },
+  "components": [
+    { "id": "dashboard", "type": "frontend", "label": "Control Dashboard", "sublabel": "Clock / Reset / Status", "pos": [40, 100], "size": [140, 64], "tag": "Google Sheets UI" },
+    { "id": "engine", "type": "backend", "label": "Apps Script Engine", "sublabel": "High-Speed Execution", "pos": [280, 100], "size": [140, 64], "tag": "V8 JavaScript" },
+    { "id": "vram", "type": "frontend", "label": "VRAM 32x32 Display", "sublabel": "16-Color RGB Matrix", "pos": [520, 100], "size": [140, 64], "tag": "0x2400-0x27FF" },
+    { "id": "ram", "type": "database", "label": "RAM Memory Matrix", "sublabel": "4096 32-Bit Words", "pos": [760, 100], "size": [140, 64], "tag": "Formula Latch" },
+    { "id": "rom", "type": "database", "label": "ROM Program Store", "sublabel": "4096 32-Bit Words", "pos": [1000, 100], "size": [140, 64], "tag": "Preloaded Code" },
+
+    { "id": "fetch", "type": "backend", "label": "Fetch & PC Unit", "sublabel": "Program Counter & IR", "pos": [40, 320], "size": [140, 64], "tag": "32-bit Address" },
+    { "id": "control", "type": "backend", "label": "Control Unit", "sublabel": "Instruction Decoder", "pos": [280, 320], "size": [140, 64], "tag": "36 Opcodes" },
+    { "id": "registers", "type": "database", "label": "32-Bit Register File", "sublabel": "32 GPRs (R0-R31)", "pos": [520, 320], "size": [140, 64], "tag": "Dual-Port Read" },
+    { "id": "alu", "type": "backend", "label": "32-Bit ALU & Shifter", "sublabel": "Math / Logic / Barrel", "pos": [760, 320], "size": [140, 64], "tag": "Two's Complement" },
+    { "id": "flags", "type": "security", "label": "Status Flags Latch", "sublabel": "ZF, CF, SF, OF", "pos": [1000, 320], "size": [140, 64], "tag": "Condition Code" },
+
+    { "id": "mmu", "type": "messagebus", "label": "Memory Controller", "sublabel": "Bus Arbiter & MMIO", "pos": [520, 460], "size": [140, 64], "tag": "Word-Aligned" }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Google Sheets Host Fabric & Storage", "wraps": ["dashboard", "engine", "vram", "ram", "rom"] },
+    { "kind": "region", "label": "SSX Silicon 1 Core (32-Bit Microarchitecture)", "wraps": ["fetch", "control", "registers", "alu", "flags", "mmu"] }
+  ],
+  "connections": [
+    { "id": "c-dash-fetch", "from": "dashboard", "to": "fetch", "label": "clock & reset", "variant": "emphasis" },
+    { "id": "c-fetch-ctrl", "from": "fetch", "to": "control", "label": "32b IR", "variant": "emphasis" },
+    { "id": "c-ctrl-reg", "from": "control", "to": "registers", "label": "reg sel" },
+    { "id": "c-reg-alu", "from": "registers", "to": "alu", "label": "operands", "variant": "emphasis" },
+    { "id": "c-alu-flags", "from": "alu", "to": "flags", "label": "flags", "variant": "emphasis" },
+    { "id": "c-alu-mmu", "from": "alu", "to": "mmu", "label": "address" },
+    { "id": "c-mmu-ram", "from": "mmu", "to": "ram", "label": "read/write", "variant": "emphasis" },
+    { "id": "c-mmu-vram", "from": "mmu", "to": "vram", "label": "pixel data" },
+    { "id": "c-rom-fetch", "from": "rom", "to": "fetch", "label": "instructions", "variant": "dashed" },
+    { "id": "c-engine-dash", "from": "engine", "to": "dashboard", "label": "macro state", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "32-Bit Execution Core",
+      "items": [
+        "32 general-purpose 32-bit registers (R0-R31) with hardwired zero (R0)",
+        "Arithmetic Logic Unit supporting 32-bit math, multi-word mul/div, and barrel shifts",
+        "Condition flags: Zero (ZF), Carry (CF), Sign (SF), and Two's Complement Overflow (OF)"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Spreadsheet Integration Fabric",
+      "items": [
+        "Native Formula Mode using circular reference latches and Google Sheets iterative calculation",
+        "High-Speed Mode using embedded V8 Apps Script engine running up to hundreds of IPS",
+        "Direct Memory-Mapped I/O with live 32x32 color matrix display mapped to VRAM at 0x2400"
+      ]
+    }
+  ]
+}
