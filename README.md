@@ -24,6 +24,22 @@ Unlike earlier 16-bit spreadsheet experiments that relied on external workbook d
 
 ---
 
+## Core microarchitecture
+
+![SSX Silicon 1 32-Bit Microarchitecture](./ssx-silicon-1---32-bit-microarchitecture%20%281%29.jpeg)
+
+The SSX-32 core architecture integrates a dedicated 32-bit arithmetic logic unit (ALU), an orthogonal 32-register bank, a unified 16KB memory fabric mapped across ROM, RAM, I/O ports, and VRAM, alongside hardware status flag tracking (`ZF`, `CF`, `SF`, `OF`).
+
+---
+
+## Instruction execution pipeline
+
+![SSX Silicon 1 Instruction Execution Pipeline](./ssx-silicon-1---instruction-execution-pipeline%20%281%29.jpeg)
+
+Execution flows through a deterministic multi-stage cycle, cleanly separating instruction fetch, decode, ALU execution, memory access, and register writeback phases.
+
+---
+
 ## Live demonstration
 
 Watch the processor execute instructions, run diagnostic verification suites, and render graphics inside Google Sheets (1.4x speed):
@@ -100,7 +116,6 @@ SSX-Silicon-1/
 ├── compiler/
 │   ├── ssx_isa.py              # ISA definitions, opcodes, and bitfield helpers
 │   ├── ssx_assembler.py        # Two-pass assembler generating binary, hex, and CSV
-│   ├── ssx_disassembler.py     # Disassembler converting machine code to assembly
 │   └── ssx_emulator.py         # Bit-exact cycle-accurate reference simulator
 ├── programs/
 │   ├── 01_hardware_selftest.ssx# Complete CPU diagnostic suite (golden: 0xCAFEBABE)
